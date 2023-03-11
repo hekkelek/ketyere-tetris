@@ -53,6 +53,8 @@ static const S_GPIO_PIN casCols[ BUTTONS_NUM_COLS ] = { {BUTTON_COL0_GPIO_Port, 
 //--------------------------------------------------------------------------------------------------------/
 //! \brief States of each buttons. Organization: RowIndex*NUM_ROWS + ColIndex
 volatile E_BUTTONS_STATE gaeButtonsState[ NUM_BUTTONS ];
+//! \brief Button events since last check
+volatile E_BUTTONS_EVENT gaeButtonsEvent[ NUM_BUTTONS ];
 //! \brief Debounce timers
 volatile U32 gau32ButtonsTimer[ NUM_BUTTONS ];
 
@@ -88,6 +90,7 @@ void Buttons_Init( void )
   for( u32Index = 0u; u32Index < NUM_BUTTONS; u32Index++ )
   {
     gaeButtonsState[ u32Index ] = BUTTON_INACTIVE;
+    gaeButtonsEvent[ u32Index ] = BUTTON_NOEVENT;
   }
   for( u32Index = 0u; u32Index < BUTTONS_NUM_ROWS; u32Index++ )
   {
@@ -125,6 +128,8 @@ void Buttons_TimerIT( void )
         {
           // Timer has expired
           gaeButtonsState[ u32RowIndex*BUTTONS_NUM_ROWS + u32Index ] = BUTTON_ACTIVE;
+          // Set event flag
+          gaeButtonsEvent[ u32RowIndex*BUTTONS_NUM_ROWS + u32Index ] = BUTTON_PRESSED;
         }
       }
       else if( BUTTON_RELEASING == eState )
@@ -159,6 +164,8 @@ void Buttons_TimerIT( void )
         {
           // Timer has expired
           gaeButtonsState[ u32RowIndex*BUTTONS_NUM_ROWS + u32Index ] = BUTTON_INACTIVE;
+          // Set event flag
+          gaeButtonsEvent[ u32RowIndex*BUTTONS_NUM_ROWS + u32Index ] = BUTTON_RELEASED;
         }
       }
       else if( BUTTON_ACTIVE )
@@ -185,5 +192,29 @@ void Buttons_TimerIT( void )
   }
   HAL_GPIO_WritePin( casRows[ u32RowIndex ].psGPIOPort, casRows[ u32RowIndex ].u16GPIOPin, GPIO_PIN_SET );
 }
+
+ /*! *******************************************************************
+ * \brief  Get last event on given button
+ * \param  eButton: index of the button
+ * \return Button event code
+ * \note   Clears the event
+ *********************************************************************/
+E_BUTTONS_EVENT Buttons_GetEvent( E_BUTTONS_INDEX eButton )
+{
+  //TODO: validate eButton
+  E_BUTTONS_EVENT eReturn;
+  U32 u32PRIMASK = __get_PRIMASK();  // get PRIMASK so we know interrupts were enabled or not
+  __disable_irq();                   // disable interrupts
+
+  eReturn = gaeButtonsEvent[ eButton ];
+  gaeButtonsEvent[ eButton ] = BUTTON_NOEVENT;
+
+  if( 0 == u32PRIMASK )  // re-enable interrupts only if they were enabled before
+  {
+    __enable_irq();
+  }
+  return eReturn;
+}
+
 
 //-----------------------------------------------< EOF >--------------------------------------------------/

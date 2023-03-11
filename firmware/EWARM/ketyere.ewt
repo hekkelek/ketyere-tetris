@@ -1470,6 +1470,15 @@
                 </file>
             </group>
             <group>
+                <name>game</name>
+                <file>
+                    <name>$PROJ_DIR$\..\game\tetris.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\game\tetris.h</name>
+                </file>
+            </group>
+            <group>
                 <name>src</name>
                 <file>
                     <name>$PROJ_DIR$\..\src\buttons.c</name>

@@ -355,6 +355,7 @@
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Device/ST/STM32F4xx/Include</state>
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
                     <state>$PROJ_DIR$/../src</state>
+                    <state>$PROJ_DIR$/../game</state>
                     <state>$PROJ_DIR$/../USB_DEVICE/App</state>
                     <state>$PROJ_DIR$/../USB_DEVICE/Target</state>
                     <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Core/Inc</state>
@@ -1131,6 +1132,15 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\usart.c</name>
+                </file>
+            </group>
+            <group>
+                <name>game</name>
+                <file>
+                    <name>$PROJ_DIR$\..\game\tetris.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\game\tetris.h</name>
                 </file>
             </group>
             <group>

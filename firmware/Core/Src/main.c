@@ -36,6 +36,7 @@
 #include "types.h"
 #include "display.h"
 #include "buttons.h"
+#include "tetris.h"
 
 /* USER CODE END Includes */
 
@@ -108,7 +109,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   // Turn on LCD backlight
-  HAL_GPIO_WritePin( LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin, GPIO_PIN_RESET );
+  HAL_GPIO_WritePin( LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin, GPIO_PIN_SET );
 
   /*
   // Test vibration motor
@@ -133,6 +134,9 @@ int main(void)
   // Initialize buttons
   Buttons_Init();
 
+  // Initialize game
+  Tetris_Init();
+  
 /*
   // Set SPI1 DMA
   LL_SPI_Disable( SPI1 );
@@ -161,22 +165,21 @@ int main(void)
     memset( gau8LCDFrameBuffer, 0, sizeof( gau8LCDFrameBuffer ) );
     
     // Run game logic that also generates graphics
-    
+    Tetris_Cycle();
     
     // Write to LCD
     LCD_Update();
-    
-    // Check buttons
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_START ] )
+
+    // Check menu button
+    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_MENU ] )
     {
+      //TODO: stop game and show OS menu
+      
       // Turn power off
       HAL_GPIO_WritePin( POWER_OFF_GPIO_Port, POWER_OFF_Pin, GPIO_PIN_SET );
     }
 
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_UP ] )
-    {
-
-    }
+/*
     static BOOL bMenuButtonEdge = FALSE;
     if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_MENU ] )
     {
@@ -222,6 +225,10 @@ int main(void)
     {
       bFireBButtonEdge = FALSE;
     }
+*/
+
+    
+    
   }
   /* USER CODE END 3 */
 }
