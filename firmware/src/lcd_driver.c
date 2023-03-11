@@ -140,13 +140,16 @@ void LCD_Pixel( U8 u8PosX, U8 u8PosY, BOOL bIsOn )
   // Inside, the LCD display uses a totally different addressing scheme
   // 1 byte corresponds to an 8-pixel tall block
   // So the display assumes that the screen is 84 byte wide and 5 line tall
-  if( TRUE == bIsOn )
+  if( ( u8PosX < LCD_SIZE_X ) && ( u8PosY < LCD_SIZE_Y ) )
   {
-    gau8LCDFrameBuffer[ u8PosX + ( LCD_SIZE_X*(u8PosY>>3u) ) ] |= 0x01u<<(u8PosY & 0x07u);
-  }
-  else
-  {
-    gau8LCDFrameBuffer[ u8PosX + ( LCD_SIZE_X*(u8PosY>>3u) ) ] &= ~( 0x01u<<(u8PosY & 0x07u) );
+    if( TRUE == bIsOn )
+    {
+      gau8LCDFrameBuffer[ u8PosX + ( LCD_SIZE_X*(u8PosY>>3u) ) ] |= 0x01u<<(u8PosY & 0x07u);
+    }
+    else
+    {
+      gau8LCDFrameBuffer[ u8PosX + ( LCD_SIZE_X*(u8PosY>>3u) ) ] &= ~( 0x01u<<(u8PosY & 0x07u) );
+    }
   }
 }
 

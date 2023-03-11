@@ -20,6 +20,7 @@ Some notes about the implementation:
 //--------------------------------------------------------------------------------------------------------/
 // Include files
 //--------------------------------------------------------------------------------------------------------/
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "types.h"
@@ -49,11 +50,13 @@ Some notes about the implementation:
 // Global/static variables
 //--------------------------------------------------------------------------------------------------------/
 static BOOL gbRunning;                                          //!< TRUE if the game is running, false otherwise
+static BOOL gbGameOver;                                         //!< TRUE if the game has finished, false otherwise
 static BOOL gabBlocks[ PLAYFIELD_SIZE_X ][ PLAYFIELD_SIZE_Y ];  //!< Blocks in the playfield
 static U32  gu32TimerMS;                                        //!< Timer that counts the time between events
 static BOOL gabTetroid[ TETROID_SIZE_X ][ TETROID_SIZE_Y ];     //!< The current tetroid
 static I8   gi8TetroidX;                                        //!< Horizontal coordinate of the bottom left corner of the tetroid
 static I8   gi8TetroidY;                                        //!< Vertical coordinate of the bottom left corner of the tetroid
+static U32  gu32Score;                                          //!< Game score
 
 
 //--------------------------------------------------------------------------------------------------------/
@@ -93,7 +96,8 @@ static void DrawBlock( U32 u32X, U32 u32Y )
  *********************************************************************/
 static void FixTetroid( void )
 {
-  U8 u8IndexX, u8IndexY, u8Iter;
+  U8   u8IndexX, u8IndexY, u8Iter;
+  U32  u32ScoreIncrease = 1;
   BOOL bFullLine;
   
   for( u8IndexX = 0; u8IndexX < PLAYFIELD_SIZE_X; u8IndexX++ )
@@ -135,12 +139,15 @@ static void FixTetroid( void )
           gabBlocks[ u8IndexX ][ u8Iter ] = gabBlocks[ u8IndexX ][ u8Iter + 1 ];
         }
       }
+      u32ScoreIncrease *= 10;
     }
     else  // if it's not full, then we have nothing to do
     {
       u8IndexY++;
     }
   }
+  // Increase score
+  gu32Score += u32ScoreIncrease;
   // Next tetroid
   RollNewTetroid();
   gi8TetroidX = (PLAYFIELD_SIZE_X - TETROID_SIZE_X)/2;
@@ -347,11 +354,13 @@ static void RotateTetroid( BOOL bClockWise )
 void Tetris_Init( void )
 {
   gbRunning = FALSE;
+  gbGameOver = FALSE;
   memset( gabBlocks, FALSE, sizeof( gabBlocks ) );
   memset( gabTetroid, FALSE, sizeof( gabTetroid ) );
   gu32TimerMS = 0;
   gi8TetroidX = 0;
   gi8TetroidY = PLAYFIELD_SIZE_Y - 1;
+  gu32Score = 0;
   // Put "Tetris" text on playfield
   //   +----------+
   // 19|          |
@@ -458,6 +467,7 @@ void Tetris_Cycle( void )
 {
   volatile U32 u32RandomNumber = rand();  // roll the random number generator so it will be more random
   U8 u8IndexX, u8IndexY;
+  U8 au8HighScoreString[ 10 ];
   U32 u32TimeNow = HAL_GetTick();
 
   // Draw playfield frame
@@ -465,6 +475,21 @@ void Tetris_Cycle( void )
   Display_DrawLine( 0, LCD_SIZE_Y - 1, 0, LCD_SIZE_Y - 1 - (PLAYFIELD_SIZE_Y*2 + PLAYFIELD_OFFSET_Y), TRUE );
   Display_DrawLine( 0, LCD_SIZE_Y - 1 - (PLAYFIELD_SIZE_Y*2 + PLAYFIELD_OFFSET_Y), PLAYFIELD_SIZE_X*2 + PLAYFIELD_OFFSET_X, LCD_SIZE_Y - 1 - (PLAYFIELD_SIZE_Y*2 + PLAYFIELD_OFFSET_Y), TRUE );
   Display_DrawLine( PLAYFIELD_SIZE_X*2 + PLAYFIELD_OFFSET_X, LCD_SIZE_Y - 1 - (PLAYFIELD_SIZE_Y*2 + PLAYFIELD_OFFSET_Y), PLAYFIELD_SIZE_X*2 + PLAYFIELD_OFFSET_X, LCD_SIZE_Y - 1, TRUE );
+  
+  // Display game over text if the game has finished
+  if( TRUE == gbGameOver )
+  {
+    Display_PrintString( "Game", 30, 10, TRUE );
+    Display_PrintString( "over", 30, 18, TRUE );
+  }
+  
+  // Print out score
+  if( ( TRUE == gbGameOver ) || ( TRUE == gbRunning ) )
+  {
+    Display_PrintString( "Score:", 24, 32, TRUE );
+    sprintf( (char*)au8HighScoreString, "%d", gu32Score );
+    Display_PrintString( au8HighScoreString, 24, 40, TRUE );
+  }
   
   // Draw blocks
   for( u8IndexX = 0; u8IndexX < PLAYFIELD_SIZE_X; u8IndexX++ )
@@ -483,6 +508,7 @@ void Tetris_Cycle( void )
   {
     // Pressing start button will start/restart the game
     gbRunning = TRUE;
+    gbGameOver = FALSE;
     memset( gabBlocks, FALSE, sizeof( gabBlocks ) );  // clear playfield
     gu32TimerMS = u32TimeNow + DEFAULT_SPEED_MS;
     // Roll a random tetroid and place it on the top of screen
@@ -508,7 +534,7 @@ void Tetris_Cycle( void )
         if( (PLAYFIELD_SIZE_Y - 1) == gi8TetroidY )
         {
           // Game over
-          //TODO: some animation or any message to the player
+          gbGameOver = TRUE;
           gbRunning = FALSE;
         }
         FixTetroid();  // this fixes the tetroid and generates a new one
@@ -527,7 +553,7 @@ void Tetris_Cycle( void )
       if( (PLAYFIELD_SIZE_Y - 1) == gi8TetroidY )
       {
         // Game over
-        //TODO: some animation or any message to the player
+        gbGameOver = TRUE;
         gbRunning = FALSE;
       }
       FixTetroid();  // this fixes the tetroid and generates a new one

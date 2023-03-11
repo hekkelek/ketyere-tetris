@@ -39,6 +39,8 @@
 // Interface functions
 //--------------------------------------------------------------------------------------------------------/
 void Display_DrawLine( U8 u8X0, U8 u8Y0, U8 u8X1, U8 u8Y1, BOOL bIsOn );
+void Display_PrintChar( U8 u8Char, U8 u8X, U8 u8Y, BOOL bIsOn );
+void Display_PrintString( U8* pu8String, U8 u8X, U8 u8Y, BOOL bIsOn );
 
 
 #endif  // DISPLAY_H
