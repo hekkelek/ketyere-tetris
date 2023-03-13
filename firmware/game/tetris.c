@@ -510,6 +510,7 @@ void Tetris_Cycle( void )
     gbRunning = TRUE;
     gbGameOver = FALSE;
     memset( gabBlocks, FALSE, sizeof( gabBlocks ) );  // clear playfield
+    gu32Score = 0;
     gu32TimerMS = u32TimeNow + DEFAULT_SPEED_MS;
     // Roll a random tetroid and place it on the top of screen
     RollNewTetroid();
