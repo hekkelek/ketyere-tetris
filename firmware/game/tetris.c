@@ -578,7 +578,8 @@ void Tetris_Cycle( void )
         gi8TetroidX -= 1;
       }
     }
-    if( BUTTON_PRESSED == Buttons_GetEvent( BUTTON_FIRE_A ) )
+    if( ( BUTTON_PRESSED == Buttons_GetEvent( BUTTON_FIRE_A ) )
+     || ( BUTTON_PRESSED == Buttons_GetEvent( BUTTON_FIRE_B ) ) )
     {
       RotateTetroid( TRUE );
       if( TRUE == CheckPlayfieldHit() )
