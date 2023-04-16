@@ -36,6 +36,7 @@
 #include "types.h"
 #include "display.h"
 #include "buttons.h"
+#include "system.h"
 #include "tetris.h"
 
 /* USER CODE END Includes */
@@ -108,9 +109,9 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
-  // Turn on LCD backlight
-  HAL_GPIO_WritePin( LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin, GPIO_PIN_SET );
-
+  // Turn off LCD backlight
+  HAL_GPIO_WritePin( LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin, GPIO_PIN_RESET );
+  
   /*
   // Test vibration motor
   for( uint8_t u8Cycles = 0; u8Cycles < 4; u8Cycles++ )
@@ -133,6 +134,9 @@ int main(void)
   
   // Initialize buttons
   Buttons_Init();
+  
+  // Initialize system menu
+  System_Init();
 
   // Initialize game
   Tetris_Init();
@@ -164,71 +168,15 @@ int main(void)
     // Clear screen
     memset( gau8LCDFrameBuffer, 0, sizeof( gau8LCDFrameBuffer ) );
     
-    // Run game logic that also generates graphics
-    Tetris_Cycle();
+    // Run system task and only run game if the system allowes that
+    if( TRUE == System_Cycle() )
+    {
+      // Run game logic that also generates graphics
+      Tetris_Cycle();
+    }
     
     // Write to LCD
-    LCD_Update();
-
-    // Check menu button
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_MENU ] )
-    {
-      //TODO: stop game and show OS menu
-      
-      // Turn power off
-      HAL_GPIO_WritePin( POWER_OFF_GPIO_Port, POWER_OFF_Pin, GPIO_PIN_SET );
-    }
-
-/*
-    static BOOL bMenuButtonEdge = FALSE;
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_MENU ] )
-    {
-      if( FALSE == bMenuButtonEdge )
-      {
-        HAL_GPIO_TogglePin( LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin );
-        bMenuButtonEdge = TRUE;
-      }
-    }
-    else
-    {
-      bMenuButtonEdge = FALSE;
-    }
-
-    static U8 u8Contrast = 0x42u;
-    static BOOL bFireAButtonEdge = FALSE;
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_FIRE_A ] )
-    {
-      if( FALSE == bFireAButtonEdge )
-      {
-        // Decrease contrast
-        u8Contrast--;
-        LCD_SetContrast( u8Contrast );
-        bFireAButtonEdge = TRUE;
-      }
-    }
-    else
-    {
-      bFireAButtonEdge = FALSE;
-    }
-    static BOOL bFireBButtonEdge = FALSE;
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_FIRE_B ] )
-    {
-      if( FALSE == bFireBButtonEdge )
-      {
-        // Inrease contrast
-        u8Contrast++;
-        LCD_SetContrast( u8Contrast );
-        bFireBButtonEdge = TRUE;
-      }
-    }
-    else
-    {
-      bFireBButtonEdge = FALSE;
-    }
-*/
-
-    
-    
+    LCD_Update();    
   }
   /* USER CODE END 3 */
 }

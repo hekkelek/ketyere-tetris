@@ -1508,6 +1508,12 @@
                     <name>$PROJ_DIR$\..\src\spi_flash.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\src\system.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\src\system.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\src\types.h</name>
                 </file>
             </group>
