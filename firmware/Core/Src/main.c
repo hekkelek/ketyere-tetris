@@ -37,6 +37,7 @@
 #include "display.h"
 #include "buttons.h"
 #include "system.h"
+#include "sound.h"
 #include "tetris.h"
 
 /* USER CODE END Includes */
@@ -138,6 +139,9 @@ int main(void)
   // Initialize system menu
   System_Init();
 
+  // Initialize sound system
+  Sound_Init();
+  
   // Initialize game
   Tetris_Init();
   

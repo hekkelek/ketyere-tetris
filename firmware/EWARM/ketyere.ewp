@@ -1167,6 +1167,24 @@
                     <name>$PROJ_DIR$\..\src\platform.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\src\sound.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\src\sound.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\src\sound_synth.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\src\sound_synth.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\src\sound_wavetables.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\src\sound_wavetables.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\src\spi_flash.c</name>
                 </file>
                 <file>

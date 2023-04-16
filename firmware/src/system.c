@@ -109,7 +109,7 @@ void System_Init( void )
   gsRuntimeGlobals.bMenuActive = FALSE;
   gsRuntimeGlobals.bBackLightActive = FALSE;
   gsRuntimeGlobals.u8LCDContrast = 0x42u;
-  gsRuntimeGlobals.u8Volume = 0xFFu;  // max volume
+  gsRuntimeGlobals.u8Volume = 0xFFu;  // full volume
 }
 
  /*! *******************************************************************
@@ -218,7 +218,7 @@ BOOL System_Cycle( void )
         }
         if( BUTTON_PRESSED == Buttons_GetEvent( BUTTON_RIGHT ) )
         {
-          if( gsRuntimeGlobals.u8Volume < 255u )
+          if( gsRuntimeGlobals.u8Volume <= 250u )
           {
             gsRuntimeGlobals.u8Volume += 5u;
           }
@@ -275,58 +275,7 @@ BOOL System_Cycle( void )
         bSelected = FALSE;  // back to main menu
       }
     }
-    
   }
-/*
-    static BOOL bMenuButtonEdge = FALSE;
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_MENU ] )
-    {
-      if( FALSE == bMenuButtonEdge )
-      {
-        HAL_GPIO_TogglePin( LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin );
-        bMenuButtonEdge = TRUE;
-      }
-    }
-    else
-    {
-      bMenuButtonEdge = FALSE;
-    }
-
-    static U8 u8Contrast = 0x42u;
-    static BOOL bFireAButtonEdge = FALSE;
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_FIRE_A ] )
-    {
-      if( FALSE == bFireAButtonEdge )
-      {
-        // Decrease contrast
-        u8Contrast--;
-        LCD_SetContrast( u8Contrast );
-        bFireAButtonEdge = TRUE;
-      }
-    }
-    else
-    {
-      bFireAButtonEdge = FALSE;
-    }
-    static BOOL bFireBButtonEdge = FALSE;
-    if( BUTTON_ACTIVE == gaeButtonsState[ BUTTON_FIRE_B ] )
-    {
-      if( FALSE == bFireBButtonEdge )
-      {
-        // Inrease contrast
-        u8Contrast++;
-        LCD_SetContrast( u8Contrast );
-        bFireBButtonEdge = TRUE;
-      }
-    }
-    else
-    {
-      bFireBButtonEdge = FALSE;
-    }
-*/
-   
-
-  
   return bReturn;
 }
 

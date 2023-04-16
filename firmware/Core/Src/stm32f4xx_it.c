@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "types.h"
 #include "buttons.h"
+#include "sound.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -208,7 +209,10 @@ void SysTick_Handler(void)
 void DMA1_Stream4_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream4_IRQn 0 */
-
+  
+  // We get here when half of the sound buffer becomes empty
+  Sound_IT();
+  
   /* USER CODE END DMA1_Stream4_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi2_tx);
   /* USER CODE BEGIN DMA1_Stream4_IRQn 1 */

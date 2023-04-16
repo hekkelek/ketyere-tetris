@@ -23,10 +23,11 @@ Some notes about the implementation:
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "stm32f4xx_hal.h"  //TODO: replace this later to an own housekeeping library
 #include "types.h"
 #include "display.h"
 #include "buttons.h"
-#include "stm32f4xx_hal.h"  //TODO: replace this later to an own housekeeping library
+#include "sound_synth.h"
 
 
 //--------------------------------------------------------------------------------------------------------/
@@ -100,6 +101,7 @@ static void FixTetroid( void )
   U32  u32ScoreIncrease = 1;
   BOOL bFullLine;
   
+  SoundSynth_Press( 2*334783, 0u );  //FIXME: proper chime instead of just one note
   for( u8IndexX = 0; u8IndexX < PLAYFIELD_SIZE_X; u8IndexX++ )
   {
     for( u8IndexY = 0; u8IndexY < PLAYFIELD_SIZE_Y; u8IndexY++ )
@@ -140,6 +142,7 @@ static void FixTetroid( void )
         }
       }
       u32ScoreIncrease *= 10;
+      SoundSynth_Press( 4*334783, 0u );  //FIXME: proper chime instead of just one note
     }
     else  // if it's not full, then we have nothing to do
     {
