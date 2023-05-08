@@ -1,3 +1,7 @@
 /firmware/EWARM/settings
 /firmware/EWARM/ketyere.dep
 /firmware/EWARM/ketyere
+/tools/mid2trk/bin
+/tools/mid2trk/obj
+/tools/mid2trk/mid2trk.depend
+/tools/mid2trk/mid2trk.layout

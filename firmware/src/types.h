@@ -1,4 +1,4 @@
-/*! *******************************************************************************************************
+﻿/*! *******************************************************************************************************
 * Copyright (c) 2018-2023 K. Sz. Horvath
 *
 * All rights reserved
@@ -58,8 +58,7 @@ typedef enum
 #define U16MAX  0xFFFFu
 
 // Special types
-typedef I8  SNDTYPE;    //!< Number format used by the synthesizer for representing sound samples
-typedef I16 MIXERTYPE;  //!< Number format used by the sound mixer
+typedef I16 SNDTYPE;    //!< Number format used by the synthesizer for representing sound samples
 
 PACKED_TYPES_BEGIN
 

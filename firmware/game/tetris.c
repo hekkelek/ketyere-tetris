@@ -28,6 +28,7 @@ Some notes about the implementation:
 #include "display.h"
 #include "buttons.h"
 #include "sound_synth.h"
+#include "tracker.h"
 
 
 //--------------------------------------------------------------------------------------------------------/
@@ -356,6 +357,7 @@ static void RotateTetroid( BOOL bClockWise )
  *********************************************************************/
 void Tetris_Init( void )
 {
+  Tracker_Init( HAL_GetTick() );  
   gbRunning = FALSE;
   gbGameOver = FALSE;
   memset( gabBlocks, FALSE, sizeof( gabBlocks ) );
@@ -515,6 +517,7 @@ void Tetris_Cycle( void )
     memset( gabBlocks, FALSE, sizeof( gabBlocks ) );  // clear playfield
     gu32Score = 0;
     gu32TimerMS = u32TimeNow + DEFAULT_SPEED_MS;
+    Tracker_Init( u32TimeNow );  
     // Roll a random tetroid and place it on the top of screen
     RollNewTetroid();
     gi8TetroidX = (PLAYFIELD_SIZE_X - TETROID_SIZE_X)/2;
@@ -524,6 +527,9 @@ void Tetris_Cycle( void )
   // If the game is running
   if( TRUE == gbRunning )
   {
+    // Play music
+    Tracker_Play( u32TimeNow );
+    
     // Check timer and down button, and move tetroid vertically
     if( ( u32TimeNow >= gu32TimerMS )                            // if timer is expired...
      || ( BUTTON_PRESSED == Buttons_GetEvent( BUTTON_DOWN ) ) )  // ...or down button is pressed

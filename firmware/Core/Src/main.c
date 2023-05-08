@@ -180,7 +180,8 @@ int main(void)
     }
     
     // Write to LCD
-    LCD_Update();    
+    LCD_Update();
+    
   }
   /* USER CODE END 3 */
 }

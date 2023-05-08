@@ -1,4 +1,4 @@
-/*! *******************************************************************************************************
+﻿/*! *******************************************************************************************************
 * Copyright (c) 2023 K. Sz. Horvath
 *
 * All rights reserved
@@ -22,7 +22,8 @@
 //--------------------------------------------------------------------------------------------------------/
 // Definitions
 //--------------------------------------------------------------------------------------------------------/
-#define NUMBER_OF_OSCILLATORS   (1u)  //!< Number of oscillators of the synthesizer
+#define NUMBER_OF_OSCILLATORS           (4u)  //!< Number of oscillators of the synthesizer
+#define SAMPLE_RATE                 (44100u)  //!< Sampling rate in Hz
 
 
 //--------------------------------------------------------------------------------------------------------/
@@ -42,8 +43,9 @@ void SoundSynth_Init( void );
 I16 SoundSynth_Sample( void );
 
 // Functions that are callable from main loop
-void SoundSynth_Press( U32 u32NoteFreq, U8 u8Oscillator );
+void SoundSynth_Press( U32 u32PhaseIncrease, U8 u8Oscillator );
 void SoundSynth_Release( U8 u8Oscillator );
+void SoundSynth_SetInstrument( U8 u8Oscillator, I16 PACKED_STRUCT* pi16WaveTable, U16 u16WaveTableSize );
 
 
 #endif  // SOUND_SYNTH_H

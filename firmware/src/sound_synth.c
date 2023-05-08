@@ -1,4 +1,4 @@
-/*! *******************************************************************************************************
+﻿/*! *******************************************************************************************************
 * Copyright (c) 2023 K. Sz. Horvath
 *
 * All rights reserved
@@ -110,7 +110,7 @@ void SoundSynth_Init( void )
     gasOscillators[ u8Index ].u32Decay = 0;
     gasOscillators[ u8Index ].u16Sustain = 0xFFFFu;
     gasOscillators[ u8Index ].u32Release = 0;
-    gasOscillators[ u8Index ].u32ADSRTimer = 0xFFFFFFFF;
+    gasOscillators[ u8Index ].u32ADSRTimer = 0xFFFFFFFFu;
     gasOscillators[ u8Index ].u16ADSROutput = 0;
   }
 
@@ -215,6 +215,7 @@ I16 SoundSynth_Sample( void )
   {
     u32Phase = gasOscillators[ u8Index ].u32Phase>>16u;
     u16ADSR = gasOscillators[ u8Index ].u16ADSROutput;
+#warning "ˇˇEz itt nem jó, mert az előjelkiterjesztés hiányzik!"
     i16Sample += (U32)gasOscillators[ u8Index ].pi16WaveTable[ u32Phase ]*u16ADSR / (NUMBER_OF_OSCILLATORS*65536u);
   }
   
@@ -223,17 +224,16 @@ I16 SoundSynth_Sample( void )
 
  /*! *******************************************************************
  * \brief  Press a note, and start the envelope generator
- * \param  u32NoteFreq: frequency of the note
+ * \param  u32PhaseIncrease: phase increase per sample
  * \param  u8Oscillator: index of the oscillator
  * \return -
  *********************************************************************/
-void SoundSynth_Press( U32 u32NoteFreq, U8 u8Oscillator )
+void SoundSynth_Press( U32 u32PhaseIncrease, U8 u8Oscillator )
 {
   if( u8Oscillator < NUMBER_OF_OSCILLATORS )
   {
-#warning "Proper note calculation!"
     __disable_irq();
-    gasOscillators[ u8Oscillator ].u32PhaseIncrease = u32NoteFreq;
+    gasOscillators[ u8Oscillator ].u32PhaseIncrease = u32PhaseIncrease;
     gasOscillators[ u8Oscillator ].u32ADSRTimer = 0u;
     gasOscillators[ u8Oscillator ].eADSRState = ADSR_ATTACK;
     __enable_irq();
@@ -251,6 +251,29 @@ void SoundSynth_Release( U8 u8Oscillator )
   {
     __disable_irq();
     gasOscillators[ u8Oscillator ].u32ADSRTimer = 0u;
+    gasOscillators[ u8Oscillator ].eADSRState = ADSR_RELEASE;
+    __enable_irq();
+  }
+}
+
+ /*! *******************************************************************
+ * \brief  Sets the instrument sample table on a given oscillator
+ * \param  u8Oscillator: index of the oscillator
+ * \param  pi16WaveTable: pointer to the beginning of the sample
+ * \param  u16WaveTableSize: wave table size in bytes
+ * \return -
+ *********************************************************************/
+void SoundSynth_SetInstrument( U8 u8Oscillator, I16 PACKED_STRUCT* pi16WaveTable, U16 u16WaveTableSize )
+{
+#warning "TODO: set ADSR parameters too"
+  if( u8Oscillator < NUMBER_OF_OSCILLATORS )
+  {
+    __disable_irq();
+    gasOscillators[ u8Oscillator ].pi16WaveTable = (I16 const*)pi16WaveTable;
+    gasOscillators[ u8Oscillator ].u16WaveTableSize = u16WaveTableSize;
+    gasOscillators[ u8Oscillator ].u32Phase = 0u;
+    gasOscillators[ u8Oscillator ].u32PhaseIncrease = 0u;
+    gasOscillators[ u8Oscillator ].u32ADSRTimer = 0xFFFFFFFFu;
     gasOscillators[ u8Oscillator ].eADSRState = ADSR_RELEASE;
     __enable_irq();
   }
